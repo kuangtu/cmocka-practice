@@ -1,0 +1,3 @@
+#对于gcc编译选项，应该包含O2优化指令
+CFLAGS=-O2 -g -Wall -ggdb -Wextra -Wpointer-arith -Wshadow -Wconversion -Wfloat-equal  
+
