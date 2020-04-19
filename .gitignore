@@ -2,3 +2,4 @@
 *.o
 *.swp
 cmocka_demo
+data/

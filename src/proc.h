@@ -4,6 +4,7 @@
 
 #define DATA_FILE_PATH	"../data/"
 #define DATA_FILE_NAME	"secdata.txt"
+#define OPEN_DATA_FILE_ERR	-1
 
 #define SECDATA_LINE_LEN	512
 
@@ -28,7 +29,13 @@ typedef struct TAG_SEC_MEM
 }SEC_MEM_T;
 
 
+uint32_t
+ProcHqPkt(const char *szBuf);
+
+void
+InitSecMem();
+
 int
-UpdateHq();
+LoadSecData();
 
 #endif //__PROC_H

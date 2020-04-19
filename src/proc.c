@@ -8,13 +8,34 @@
 
 #define MAX_SEC_CODE 100
 
-static SEC_MEM_T tSecMem[MAX_SEC_CODE];
+static SEC_MEM_T gs_tSecMem[MAX_SEC_CODE];
 
+static void
+UpdateMsg(MSG_STATS_T *ptMsg)
+{
+	uint32_t u32Code = ptMsg->u32SecurityCode;
+	SEC_MEM_T tSecMem = gs_tSecMem[u32Code];
+
+	uint32_t u32LstPrice = ptMsg->u32LstPrice;
+	tSecMem.u32LstPrice = u32LstPrice;
+
+	uint32_t u32ClsPrice = ptMsg->u32ClsPrice;
+	tSecMem.u32ClsPrice = u32ClsPrice;
+
+	uint64_t u64Shares = ptMsg->ullSharesTraded;
+	tSecMem.ullSharesTraded = u64Shares;
+
+	int64_t llTurnover = ptMsg->llTurnover;
+	tSecMem.llTurnover = llTurnover;
+
+	return;
+
+}
 
 void
 InitSecMem()
 {
-	memset(&tSecMem, 0, sizeof(SEC_MEM_T) * MAX_SEC_CODE);
+	memset(&gs_tSecMem, 0, sizeof(SEC_MEM_T) * MAX_SEC_CODE);
 }
 
 int
@@ -27,10 +48,14 @@ LoadSecData()
     memset(szFileName, 0, PATH_MAX + 1);
 	strncat(szFileName, DATA_FILE_PATH, strlen(DATA_FILE_PATH));
 	strncat(szFileName, DATA_FILE_NAME, strlen(DATA_FILE_NAME));
-	printf("the szFileName is:%s\n", szFileName);
 
-	FILE *fpFile = fopen(szFileName, "w+");
+	FILE *fpFile = fopen(szFileName, "r");
 	//Check FILE
+	if (!fpFile)
+	{
+		//TODO strerror
+		return OPEN_DATA_FILE_ERR;
+	}
 	
 	memset(szReadLine, 0, SECDATA_LINE_LEN);
 	while(fgets(szReadLine, 256, fpFile) != NULL)
@@ -48,7 +73,7 @@ LoadSecData()
 		char *pEnd;
 		char *szCode = ptLineColumns->szColumns[SEQ_SECCODE];
 		unsigned long int code = strtoul(szCode, &pEnd, 10);
-		SEC_MEM_T secTmp = tSecMem[code];
+		SEC_MEM_T secTmp = gs_tSecMem[code];
 
 		char *szLstPrice = ptLineColumns->szColumns[SEQ_LSTPRICE];
 		unsigned long int price = strtoul(szLstPrice, &pEnd, 10);
@@ -74,27 +99,37 @@ LoadSecData()
 		FreeLineColumns(ptLineColumns);
 	}
 
+	return 0;
 
 }
 
-int
+uint32_t
 ProcHqPkt(const char *szBuf)
 {
-	uint8_t ucMsgCount = 0;
+	uint32_t u32SeqNum = 0;
 	uint16_t usPktSize = 0;
+
 	HQ_PKT_HEADER_T *ptPktHeader = (HQ_PKT_HEADER_T*)szBuf;
-
 	usPktSize = ptPktHeader->usPktSize;
-	ucMsgCount = ptPktHeader->ucMsgCount;
+	u32SeqNum = ptPktHeader->u32SeqNum;
 
-	return 0;
-			
+	szBuf += PKT_HEADER_SIZE;
+	usPktSize -= PKT_HEADER_SIZE;
+
+	//跳过包头指向消息
+	while(usPktSize > 0)
+	{
+		MSG_STATS_T *ptMsg = (MSG_STATS_T*)szBuf;
+		UpdateMsg(ptMsg);
+		
+		szBuf +=  ptMsg->usMsgSize;
+		usPktSize -= ptMsg->usMsgSize;
+		u32SeqNum++;
+	}
+
+	//最新的消息编号
+	return u32SeqNum;
+		
 }
 
-
-static int
-UpdateMsg()
-{
-
-}
 

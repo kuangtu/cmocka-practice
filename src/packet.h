@@ -7,6 +7,7 @@
 #define MSG_STATS_SIZE			32
 
 #pragma pack(push, 1)
+
 typedef struct TAG_HQ_PKT_HEADER
 {
 	uint16_t usPktSize; //数据包的长度，包含头部

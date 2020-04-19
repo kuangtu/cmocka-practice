@@ -31,6 +31,9 @@ RecvHqThd(void *arg)
 	iRet = ConnectSrv();
 	printf("the connect srv ret is %d\n", iRet);
 
+	iRet = ReadFromSrv();
+	printf("read from srv ret is %d\n", iRet);
+
 	return NULL;
 }
 
@@ -129,16 +132,14 @@ ReadFromSrv()
 			}
 			else
 			{
-				//读取的原始数据放入到read buffer中，判断是否为全部的一个packet
-				//iFeedRet = ETNETReadFeed(&gs_ptNetContext->tNetBuf, szBuf, (size_t)iRead);
-				
 				//copy到缓存中，进行解析
+				CopyBuf(szBuf, (size_t)iRead);
 			}
 		}
 
 	}
 
-	return ;
+	return iRet;
 }
 
 bool
@@ -159,6 +160,8 @@ CopyBuf(char *szBuf, size_t iRead)
 {
 
 	bool bBuf = true;
+	uint32_t u32SeqNum = 0;
+
 	//判断剩余buffer大小
 	if (!IsRemain())
 	{
@@ -176,8 +179,11 @@ CopyBuf(char *szBuf, size_t iRead)
 	{
 
 		//更新到内存中
+		u32SeqNum = ProcHqPkt(gs_tNetContext.szBuf);
+
+		//TODO根据完整包的大小还需要调整buffer中的长度
 		
-		//还需要调整buffer中的内容
+		
 	}
 	
 
