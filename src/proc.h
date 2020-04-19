@@ -1,5 +1,5 @@
 #ifndef __PROC_H
-#define __pROC_H
+#define __PROC_H
 #include <inttypes.h>
 
 #define DATA_FILE_PATH	"../data/"
@@ -30,7 +30,7 @@ typedef struct TAG_SEC_MEM
 
 
 uint32_t
-ProcHqPkt(const char *szBuf);
+ProcHqPkt(char *szBuf);
 
 void
 InitSecMem();

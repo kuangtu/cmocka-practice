@@ -104,7 +104,7 @@ LoadSecData()
 }
 
 uint32_t
-ProcHqPkt(const char *szBuf)
+ProcHqPkt(char *szBuf)
 {
 	uint32_t u32SeqNum = 0;
 	uint16_t usPktSize = 0;

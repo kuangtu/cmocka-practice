@@ -10,8 +10,18 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include "recv.h"
+#include "util.h"
+#include "proc.h"
 
 static NET_CONTEXT_T gs_tNetContext;
+
+static bool gs_bRunFlag = true;
+
+void
+SetRecvFlg(bool bFlg)
+{
+	gs_bRunFlag = bFlg;
+}
 
 static int 
 ConnectSrv();
@@ -25,14 +35,11 @@ CopyBuf(char *szBuf, size_t iRead);
 void*
 RecvHqThd(void *arg)
 {
-	printf("recv hq\n");
-	int iRet = 0;
+	UNUSED(arg);
 
-	iRet = ConnectSrv();
-	printf("the connect srv ret is %d\n", iRet);
+	ConnectSrv();
 
-	iRet = ReadFromSrv();
-	printf("read from srv ret is %d\n", iRet);
+	ReadFromSrv();
 
 	return NULL;
 }
@@ -72,13 +79,11 @@ ReadFromSrv()
 
 	char szBuf[RECV_BUF_SIZE];  //socket读取buffer
 	ssize_t iRead = 0;       //读取到的数据大小
-	int iRet = 0;
 	fd_set tReadSet;	//读取文件描述符集合
-	int iMaxFp;
-	int iFeedRet = 0;
 	struct timeval tTimeout;
+	int iRet = 0;
 
-	while(true)
+	while(gs_bRunFlag)
 	{
 
 		//清空read集合
@@ -133,10 +138,11 @@ ReadFromSrv()
 			else
 			{
 				//copy到缓存中，进行解析
-				CopyBuf(szBuf, (size_t)iRead);
+				iRet = CopyBuf(szBuf, (size_t)iRead);
 			}
 		}
 
+		printf("%s----%s-----%d\n", __FILE__, __FUNCTION__, __LINE__);
 	}
 
 	return iRet;
@@ -152,14 +158,13 @@ IsRemain()
 bool
 IsFullPkt()
 {
-	return false;
+	return true;
 }
 
 int
 CopyBuf(char *szBuf, size_t iRead)
 {
 
-	bool bBuf = true;
 	uint32_t u32SeqNum = 0;
 
 	//判断剩余buffer大小
@@ -181,9 +186,17 @@ CopyBuf(char *szBuf, size_t iRead)
 		//更新到内存中
 		u32SeqNum = ProcHqPkt(gs_tNetContext.szBuf);
 
+		//LOG SEQ
+		UNUSED(u32SeqNum);
+	
 		//TODO根据完整包的大小还需要调整buffer中的长度
 		
+		return COPY_BUF_OK;
 		
+	}
+	else
+	{
+		return NOT_FULL_PKT;
 	}
 	
 

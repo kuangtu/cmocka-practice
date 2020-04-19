@@ -2,6 +2,8 @@
 #define __UTIL_H
 #include <stdint.h>
 
+#define UNUSED(x)           ((void)(x))   //避免gcc告警
+
 typedef struct TAG_LINE_COLUMNS
 {
 	uint32_t u32Size;

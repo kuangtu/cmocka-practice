@@ -1,5 +1,6 @@
 #ifndef __RECV_H
 #define __RECV_H
+#include <stdbool.h>
 
 #define RECV_BUF_SIZE 		64 * 1024
 #define SERVER_IP 			"127.0.0.1"
@@ -19,6 +20,9 @@
 #define BUF_SIZE_ERR		-9
 #define COPY_BUF_OK			1
 #define NOT_FULL_PKT		-1
+
+
+
 typedef struct TAG_NET_CONTEXT
 {
 	int iErr;
@@ -32,5 +36,8 @@ typedef struct TAG_NET_CONTEXT
 
 void*
 RecvHqThd(void *arg);
+
+void
+SetRecvFlg(bool bFlg);
 
 #endif //__RECV_H

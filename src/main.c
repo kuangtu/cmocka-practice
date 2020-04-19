@@ -5,10 +5,14 @@
 #include "recv.h"
 #include "packet.h"
 #include "proc.h"
+#include "util.h"
 
 int
 main(int argc, char *argv[]) 
 {
+
+	UNUSED(argc);
+	UNUSED(argv);
 
 	pthread_t tRecvThd;
 	int iRet = 0;
