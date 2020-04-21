@@ -142,7 +142,6 @@ ReadFromSrv()
 			}
 		}
 
-		printf("%s----%s-----%d\n", __FILE__, __FUNCTION__, __LINE__);
 	}
 
 	return iRet;
@@ -156,8 +155,10 @@ IsRemain()
 }
 
 bool
-IsFullPkt()
+IsFullPkt(char *szBuf, size_t iRead)
 {
+	//检查数据包完整性
+	HQ_PKT_HEADER_T *ptHeader = (HQ_PKT_HEADER_T *)szBuf;
 	return true;
 }
 
@@ -166,6 +167,8 @@ CopyBuf(char *szBuf, size_t iRead)
 {
 
 	uint32_t u32SeqNum = 0;
+	//LOG SEQ
+	UNUSED(u32SeqNum);
 
 	//判断剩余buffer大小
 	if (!IsRemain())
@@ -186,8 +189,6 @@ CopyBuf(char *szBuf, size_t iRead)
 		//更新到内存中
 		u32SeqNum = ProcHqPkt(gs_tNetContext.szBuf);
 
-		//LOG SEQ
-		UNUSED(u32SeqNum);
 	
 		//TODO根据完整包的大小还需要调整buffer中的长度
 		
