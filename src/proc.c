@@ -39,15 +39,10 @@ InitSecMem()
 }
 
 int
-LoadSecData()
+LoadSecData(char *szFileName)
 {
-	char szFileName[PATH_MAX + 1];
     char szReadLine[SECDATA_LINE_LEN];
 	LINE_COLUMNS_T *ptLineColumns = NULL;
-
-    memset(szFileName, 0, PATH_MAX + 1);
-	strncat(szFileName, DATA_FILE_PATH, strlen(DATA_FILE_PATH));
-	strncat(szFileName, DATA_FILE_NAME, strlen(DATA_FILE_NAME));
 
 	FILE *fpFile = fopen(szFileName, "r");
 	//Check FILE

@@ -36,6 +36,6 @@ void
 InitSecMem();
 
 int
-LoadSecData();
+LoadSecData(char *szFileName);
 
 #endif //__PROC_H

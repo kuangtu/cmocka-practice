@@ -12,6 +12,7 @@
 #include "recv.h"
 #include "util.h"
 #include "proc.h"
+#include "packet.h"
 
 static NET_CONTEXT_T gs_tNetContext;
 
@@ -31,6 +32,12 @@ ReadFromSrv();
 
 int
 CopyBuf(char *szBuf, size_t iRead);
+
+static bool
+IsRemain();
+
+static bool
+IsFullPkt(char *szBuf, size_t iRead);
 
 void*
 RecvHqThd(void *arg)
@@ -147,19 +154,29 @@ ReadFromSrv()
 	return iRet;
 }
 
-bool
+static bool
 IsRemain()
 {
 
 	return true;
 }
 
-bool
-IsFullPkt(char *szBuf, size_t iRead)
+static bool
+IsFullPkt(char *szBuf, size_t iLen)
 {
 	//检查数据包完整性
 	HQ_PKT_HEADER_T *ptHeader = (HQ_PKT_HEADER_T *)szBuf;
-	return true;
+
+	uint16_t usPktSize = ptHeader->usPktSize;
+
+	if (iLen >= usPktSize)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 int
@@ -183,7 +200,7 @@ CopyBuf(char *szBuf, size_t iRead)
 	gs_tNetContext.iPos += iRead;
 
 	//完整数据包的检查
-	if(IsFullPkt())	
+	if(IsFullPkt(gs_tNetContext.szBuf, gs_tNetContext.iPos))	
 	{
 
 		//更新到内存中
