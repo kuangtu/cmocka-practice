@@ -130,6 +130,27 @@ testLoadSecData_uncomp(void **state)
 	remove(szFileName);
 }
 
+void
+testLoadSecData_fileErr(void **state)
+{
+
+	UNUSED(state);
+
+	char szFileName[PATH_MAX + 1];
+	int iRet = 0;
+
+	//模拟文件不存在
+    memset(szFileName, 0, PATH_MAX + 1);
+	strncat(szFileName, "filenotfind.txt", PATH_MAX);
+
+
+	//初始化内存行情
+	InitSecMem();
+
+	iRet = LoadSecData(szFileName);	
+	assert_int_equal(iRet, OPEN_DATA_FILE_ERR);
+
+}
 void 
 testProcHqPkt(void **state)
 {
@@ -177,6 +198,7 @@ main(int argc, char *argv[])
 	const UnitTest tests[] = {
 		unit_test_setup_teardown(testLoadSecData, test_proc_setup, test_proc_down),
 		unit_test_setup_teardown(testLoadSecData_uncomp, test_proc_setup, test_proc_down),
+		unit_test_setup_teardown(testLoadSecData_fileErr, test_proc_setup, test_proc_down),
 		unit_test_setup_teardown(testProcHqPkt, test_proc_setup, test_proc_down),
 	};
 
