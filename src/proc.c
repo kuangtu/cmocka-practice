@@ -6,7 +6,7 @@
 #include "proc.h"
 #include "util.h"
 
-#define MAX_SEC_CODE 100
+#define MAX_SEC_CODE 10000
 
 static SEC_MEM_T gs_tSecMem[MAX_SEC_CODE];
 
@@ -14,19 +14,19 @@ static void
 UpdateMsg(MSG_STATS_T *ptMsg)
 {
 	uint32_t u32Code = ptMsg->u32SecurityCode;
-	SEC_MEM_T tSecMem = gs_tSecMem[u32Code];
+	SEC_MEM_T *ptSecMem = &gs_tSecMem[u32Code];
 
 	uint32_t u32LstPrice = ptMsg->u32LstPrice;
-	tSecMem.u32LstPrice = u32LstPrice;
+	ptSecMem->u32LstPrice = u32LstPrice;
 
 	uint32_t u32ClsPrice = ptMsg->u32ClsPrice;
-	tSecMem.u32ClsPrice = u32ClsPrice;
+	ptSecMem->u32ClsPrice = u32ClsPrice;
 
 	uint64_t u64Shares = ptMsg->ullSharesTraded;
-	tSecMem.ullSharesTraded = u64Shares;
+	ptSecMem->ullSharesTraded = u64Shares;
 
 	int64_t llTurnover = ptMsg->llTurnover;
-	tSecMem.llTurnover = llTurnover;
+	ptSecMem->llTurnover = llTurnover;
 
 	return;
 
@@ -68,27 +68,27 @@ LoadSecData(char *szFileName)
 		char *pEnd;
 		char *szCode = ptLineColumns->szColumns[SEQ_SECCODE];
 		unsigned long int code = strtoul(szCode, &pEnd, 10);
-		SEC_MEM_T secTmp = gs_tSecMem[code];
+		SEC_MEM_T *secTmp = &gs_tSecMem[code];
 
 		char *szLstPrice = ptLineColumns->szColumns[SEQ_LSTPRICE];
 		unsigned long int price = strtoul(szLstPrice, &pEnd, 10);
-		secTmp.u32LstPrice = (uint32_t)price;
+		secTmp->u32LstPrice = (uint32_t)price;
 
 		char *szClsPrice = ptLineColumns->szColumns[SEQ_CLSPRICE];
 		price = strtoul(szClsPrice, &pEnd, 10);
-		secTmp.u32ClsPrice = (uint32_t)price;
+		secTmp->u32ClsPrice = (uint32_t)price;
 
 		char *szshare = ptLineColumns->szColumns[SEQ_SHARES];
 		unsigned long long shares = strtoull(szshare, &pEnd, 10);
-		secTmp.ullSharesTraded = shares;
+		secTmp->ullSharesTraded = shares;
 
 		char *szturnover = ptLineColumns->szColumns[SEQ_TURNOVER];
 		long long turnover = strtoll(szturnover, &pEnd, 10);
-		secTmp.llTurnover = turnover;
+		secTmp->llTurnover = turnover;
 
 		char *sztime = ptLineColumns->szColumns[SEQ_TIME];
 		unsigned long long time = strtoull(sztime, &pEnd, 10);
-		secTmp.ullSendTime = time;
+		secTmp->ullSendTime = time;
 
 		memset(szReadLine, 0, SECDATA_LINE_LEN);
 		FreeLineColumns(ptLineColumns);
@@ -116,7 +116,6 @@ ProcHqPkt(char *szBuf)
 	{
 		MSG_STATS_T *ptMsg = (MSG_STATS_T*)szBuf;
 		UpdateMsg(ptMsg);
-		
 		szBuf +=  ptMsg->usMsgSize;
 		usPktSize -= ptMsg->usMsgSize;
 		u32SeqNum++;

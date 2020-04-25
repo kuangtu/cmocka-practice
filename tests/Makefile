@@ -5,8 +5,8 @@ PROG=testrecv testproc
 #可以将源代码中的.c文件包含进来
 MODINC=-I. -I../src
 MODLIBS=-lpthread -lrt -ldl
-TESTRECVOBJ=
-TESTPROCOBJ=
+TESTRECVOBJ= testutil.o
+TESTPROCOBJ= testutil.o
 CMOCKAOBJ=cmocka.o
 OBJ1=testrecv.o testproc.o
 all:${PROG}
@@ -16,9 +16,9 @@ DEPS := ${OBJ1:.o=.d}
 	${CC}  ${CFLAGS} ${MODFLGS} ${MODINC} -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	${CC}  ${CFLAGS} ${MODFLGS} ${MODINC} -c $<
 
-testrecv: ${CMOCKAOBJ} testrecv.o
-	${CC}  -o ${DEST}$@ $^ ${CFLAGS} ${MODINC} ${MODLIBS} 
-testproc: ${CMOCKAOBJ} testproc.o
+testrecv: ${CMOCKAOBJ} ${TESTRECVOBJ} testrecv.o
+	${CC} -Wl,--wrap=ProcHqPkt -o ${DEST}$@ $^ ${CFLAGS} ${MODINC} ${MODLIBS} 
+testproc: ${CMOCKAOBJ} ${TESTPROCOBJ} testproc.o
 	${CC}  -o ${DEST}$@ $^ ${CFLAGS} ${MODINC} ${MODLIBS} 
 clean:
 	rm -rf *.o
