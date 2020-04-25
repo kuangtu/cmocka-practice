@@ -5,3 +5,6 @@ cmocka_demo
 data/
 tags
 *.out
+tests/testproc
+tests/testrecv
+
