@@ -1,30 +1,3 @@
-/*########################################################################
- *#                                                                      #
- *#                      Copyright (c) 2020 by                           #
- *#          China Securities Index (CSI), Shanghai, China              #
- *#                       All rights reserved.                           #
- *#                                                                      #
- *########################################################################
-
- *****************************************************************************
- *
- * Module Name   : 内存行情处理单元测试模块
- * File   Name   : mktdata.c
- * Description   : market data process
- * Corporation   : CSI
- * Author        : Moxuansheng
- * Created Date  : 2020-02-18
- * Memo          :
- *****************************************************************************/
-/*****************************************************************************
- *  MODIFICATION HISTORY:
- *
- *    DATE      PROG.
- *  DD-MMM-YYYY INIT.         SIR    Modification Description
- *  ----------- ----------- ------  ------------------------------------------
- *  18-Feb-2020 Moxuansheng           Create
- *****************************************************************************/
-
 #include <limits.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -174,21 +147,7 @@ test_RecvFromSrv_out(void **state)
 	assert_int_equal(iRet, SELECT_TIMEOUT);
 }
 
-void 
-test_RecvFromSrv_err(void **state)
-{
-	UNUSED(state);
-
-	int iRet = 0;
-
-	//设置connect返回
-	will_return(select, -1);
-
-	iRet = ReadFromSrv();
-
-	assert_int_equal(iRet, SELECT_ERR);
-
-}
+    
 
 void 
 test_RecvFromSrv_timeout(void **state)
@@ -292,4 +251,5 @@ main(int argc, char *argv[])
 
 	return 0;
 }
+
 

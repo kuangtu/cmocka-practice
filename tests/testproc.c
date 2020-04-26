@@ -1,30 +1,3 @@
-/*########################################################################
- *#                                                                      #
- *#                      Copyright (c) 2020 by                           #
- *#          China Securities Index (CSI), Shanghai, China              #
- *#                       All rights reserved.                           #
- *#                                                                      #
- *########################################################################
-
- *****************************************************************************
- *
- * Module Name   : 内存行情处理单元测试模块
- * File   Name   : mktdata.c
- * Description   : market data process
- * Corporation   : CSI
- * Author        : Moxuansheng
- * Created Date  : 2020-02-18
- * Memo          :
- *****************************************************************************/
-/*****************************************************************************
- *  MODIFICATION HISTORY:
- *
- *    DATE      PROG.
- *  DD-MMM-YYYY INIT.         SIR    Modification Description
- *  ----------- ----------- ------  ------------------------------------------
- *  18-Feb-2020 Moxuansheng           Create
- *****************************************************************************/
-
 #include <limits.h>
 #include <stdio.h>
 #include <unistd.h>
