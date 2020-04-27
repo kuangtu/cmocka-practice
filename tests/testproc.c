@@ -161,6 +161,30 @@ testProcHqPkt(void **state)
 
 }
 
+static void
+testUpdateMsg(void **state)
+{
+	UNUSED(state);
+
+	MSG_STATS_T tMsg;
+
+	memset(&tMsg, 0, sizeof(MSG_STATS_T));
+
+	tMsg.u32Code = 3988;
+	tMsg.u32LstPrice = 1000;
+	tMsg.u32ClsPrice = 1010;
+	tMsg.ullSharesTraded = 200;
+	tMsg.llTurnover = 180000;
+
+	UpdateMsg(&tMsg);
+
+	SEC_MEM_T *ptSecMem = &gs_tSecMem[3988];
+
+	assert_int_equal(ptSecMem->u32LstPrice, 1000);
+	assert_int_equal(ptSecMem->llTurnover, 180000);
+
+}
+
 int
 main(int argc, char *argv[]) 
 {
@@ -173,6 +197,7 @@ main(int argc, char *argv[])
 		unit_test_setup_teardown(testLoadSecData_uncomp, test_proc_setup, test_proc_down),
 		unit_test_setup_teardown(testLoadSecData_fileErr, test_proc_setup, test_proc_down),
 		unit_test_setup_teardown(testProcHqPkt, test_proc_setup, test_proc_down),
+		unit_test_setup_teardown(testUpdateMsg, test_proc_setup, test_proc_down),
 	};
 
 	run_tests(tests);
