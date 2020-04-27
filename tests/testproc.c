@@ -170,7 +170,7 @@ testUpdateMsg(void **state)
 
 	memset(&tMsg, 0, sizeof(MSG_STATS_T));
 
-	tMsg.u32Code = 3988;
+	tMsg.u32SecurityCode = 3988;
 	tMsg.u32LstPrice = 1000;
 	tMsg.u32ClsPrice = 1010;
 	tMsg.ullSharesTraded = 200;

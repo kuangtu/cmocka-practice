@@ -166,6 +166,22 @@ test_RecvFromSrv_timeout(void **state)
 }
 
 void 
+test_RecvFromSrv_err(void **state)
+{
+       UNUSED(state);
+
+       int iRet = 0;
+
+       //设置connect返回
+       will_return(select, -1);
+
+       iRet = ReadFromSrv();
+
+       assert_int_equal(iRet, SELECT_ERR);
+
+}
+
+void 
 test_RecvFromSrv_ok(void **state)
 {
 	UNUSED(state);
